@@ -307,7 +307,7 @@ class GCLDiscrim(SingleTimestepIRL):
 
         energy  = tf.get_default_session().run(self.energy,
                                                     feed_dict={self.act_t: acts, self.obs_t: obs})
-        energy = -energy[:,0] 
+        energy = -energy[:,0]
         return self.unpack(energy, paths)
 
     def eval_expert_probs(self, expert_paths, policy, insert=False):

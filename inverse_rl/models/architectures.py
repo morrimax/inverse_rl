@@ -19,6 +19,13 @@ def relu_net(x, layers=2, dout=1, d_hidden=32):
     out = linear(out, dout=dout, name='lfinal')
     return out
 
+def disentangled_net(x, layers=2, dout=1, d_hidden=32):
+    g = linear_net(x)
+    with tf.variable_scope('h'):
+        hs_ = relu_net(x[:,1:])
+    with tf.variable_scope('h', reuse=True):
+        hs = relu_net(x[:,:-1])
+    return g + hs_ - hs
 
 def linear_net(x, dout=1):
     out = x

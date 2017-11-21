@@ -7,7 +7,7 @@ from rllab.envs.gym_env import GymEnv
 
 
 from inverse_rl.algos.irl_trpo import IRLTRPO
-from inverse_rl.models.imitation_learning import GAIL
+from inverse_rl.models.imitation_learning import GCLDiscrimTrajectory
 from inverse_rl.utils.log_utils import rllab_logdir, load_latest_experts
 
 def main():
@@ -15,7 +15,7 @@ def main():
     
     experts = load_latest_experts('data/pendulum', n=50)
 
-    irl_model = GAIL(env_spec=env.spec, expert_trajs=experts)
+    irl_model = GCLDiscrimTrajectory(env_spec=env.spec, expert_trajs=experts)
     policy = GaussianMLPPolicy(name='policy', env_spec=env.spec, hidden_sizes=(32, 32))
     algo = IRLTRPO(
         env=env,
@@ -28,12 +28,12 @@ def main():
         store_paths=True,
         discrim_train_itrs=50,
         irl_model_wt=1.0,
-        entropy_weight=0.0, # GAIL should not use entropy unless for exploration
+        entropy_weight=0.1, # this should be 1.0 but 0.1 seems to work better
         zero_environment_reward=True,
         baseline=LinearFeatureBaseline(env_spec=env.spec)
     )
 
-    with rllab_logdir(algo=algo, dirname='data/pendulum_gail'):
+    with rllab_logdir(algo=algo, dirname='data/pendulum_traj'):
         with tf.Session():
             algo.train()
 
