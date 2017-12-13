@@ -28,9 +28,9 @@ def plot(examples, discounts, scores, algorithm, output_file):
 	ax.set_xlabel('Number of Examples')
 	ax.set_ylabel('Discount Factor')
 	ax.set_zlabel('Average Return')
-	if algorithm == 'TRAJ':
-		algorithm = 'AIRL (trajectory)'
-	elif algorithm == 'GCL':
+	if algorithm == 'GCL':
+		algorithm = 'AIRL (non-robust)'
+	elif algorithm == 'TRAJ':
 		algorithm = 'GAN-GCL'
 	ax.set_title('{} Hyperparameter Surface'.format(algorithm))
 	plt.show()
