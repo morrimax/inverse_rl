@@ -52,7 +52,22 @@ class ImitationLearning(object, metaclass=Hyperparametrized):
 
     @staticmethod
     def extract_paths(paths, keys=('observations', 'actions'), stack=True):
+
+        # for path in paths:
+        #     if 'a_logprobs' in path:
+        #         path['a_logprobs'] = np.expand_dims(path['a_logprobs'], axis=1)
+
+        for path in paths:
+            for key in keys:
+                print (path[key].shape)
         if stack:
+            # max_traj_length = 1000
+            # for path in paths:
+            #     for key in keys:
+            #         pad = np.zeros((max_traj_length - path[key].shape[0],) + path[key].shape[1:])
+            #         path[key] = np.concatenate([path[key], pad], axis=0)
+
+
             return [np.stack([t[key] for t in paths]).astype(np.float32) for key in keys]
         else:
             return [np.concatenate([t[key] for t in paths]).astype(np.float32) for key in keys]
@@ -543,11 +558,13 @@ class GCLDiscrimTrajectory(TrajectoryIRL):
         obs, acts, path_probs = self.extract_paths(paths, keys=('observations', 'actions', 'a_logprobs'))
         expert_obs, expert_acts, expert_probs = self.extract_paths(self.expert_trajs, keys=('observations', 'actions', 'a_logprobs'))
 
+        print(acts.shape)
         # Train discriminator
         for it in TrainingIterator(max_itrs, heartbeat=5):
             obs_batch, act_batch, lprobs_batch = \
                 self.sample_batch(obs, acts, path_probs, batch_size=batch_size)
 
+            print(act_batch.shape)
             expert_obs_batch, expert_act_batch, expert_lprobs_batch = \
                 self.sample_batch(expert_obs, expert_acts, expert_probs, batch_size=batch_size)
             T = expert_obs_batch.shape[1]

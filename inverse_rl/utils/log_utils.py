@@ -35,8 +35,11 @@ def get_expert_fnames(log_dir, n=5):
         if m:
             itr_count = m.group('itr_count')
             itr_files.append((itr_count, filename))
-
-    itr_files = sorted(itr_files, key=lambda x: int(x[0]), reverse=True)[:n]
+    print (itr_files)
+    itr_files = sorted(itr_files, key=lambda x: int(x[0]), reverse=True)
+    print (itr_files, n)
+    itr_files = itr_files[:n]
+    print (itr_files)
     for itr_file_and_count in itr_files:
         fname = os.path.join(log_dir, itr_file_and_count[1])
         print('Loading %s' % fname)
